@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             margin:1em;
         }
         `;
-        shadow.appendChild(style);
+            shadow.appendChild(style);
         }
         connectedCallback() {
             let shortDay = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let realInput;
 
             let type;
+            let readOnly = false;
 
             function selectDate(datePicker) {
                 let dateStr = input.getAttribute('value');
@@ -139,8 +140,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 let day = dateSplit[0];
                 let month = dateSplit[1] - 1;
                 let year = dateSplit[2];
-                let hours = root.getElementById('heure').value;
-                let minute = root.getElementById('minute').value;
+                let hours = 0;
+                let minute = 0;
+                if (type == "datetime") {
+                    hours = root.getElementById('heure').value;
+                    minute = root.getElementById('minute').value;
+                }
                 setNewDate(year, month, day, hours, minute);
                 hideDatePicker(datePicker);
             }
@@ -157,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return day;
             }
             function showDatePicker(datePicker) {
-                if (!visible) {
+                if (!visible && !readOnly) {
                     datePicker.classList.add('show');
                     visible = true;
                 }
@@ -191,7 +196,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 let year = date.getFullYear();
                 let heure = infTen(date.getHours());
                 let minutes = infTen(date.getMinutes());
-                return day + "/" + month + "/" + year + " " + heure + ":" + minutes + ":00";
+                if (type == "datetime") {
+                    return day + "/" + month + "/" + year + " " + heure + ":" + minutes + ":00";
+                }
+                else if (type == "date") {
+                    return day + "/" + month + "/" + year;
+                }
             }
             function setDate(annee, mois, jour, heure, minute) {
                 let date = new Date(annee, mois, jour, heure, minute);
@@ -312,8 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             function initDatePicker() {
                 let datePicker = document.createElement("div");
-                realInput = document.createElement('input');
-                realInput.type="text";
+                realInput.type = "text";
                 shadow.appendChild(realInput);
                 input = document.createElement('input');
                 input.setAttribute('type', 'text');
@@ -344,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let hourSelector = document.createElement('div');
                 hourSelector.classList.add('date-picker-hours');
                 datePicker.appendChild(hourSelector);
-                
+
                 let timeDiv = document.createElement('div');
                 timeDiv.classList.add('date-picker-timediv')
                 let heureInput = document.createElement('input');
@@ -362,7 +371,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 let h = document.createElement('p');
                 h.innerHTML = "H";
-                if(type != "datetime"){
+                console.log(type);
+                if (type == "datetime") {
                     timeDiv.appendChild(heureInput);
                     timeDiv.appendChild(h);
                     timeDiv.appendChild(minuteInput);
@@ -385,22 +395,41 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 datePicker.appendChild(buttonValidator);
             }
-            initDatePicker();
             if (this.hasAttribute('name')) {
+                realInput = document.createElement('input');
                 realInput.setAttribute('name', this.getAttribute('name'));
+                realInput.setAttribute('id', "realInput");
+                realInput.addEventListener('change', function () {
+                    input.setAttribute('value', realInput.getAttribute('value'));
+                    input.value=realInput.getAttribute('value');
+                });
             }
             else {
                 throw "attribute name required";
             }
-            if(this.hasAttribute('type'))
-            {
-                type=this.getAttribute('type');
+            if (this.hasAttribute('type')) {
+                type = this.getAttribute('type');
             }
-            else{
+            else {
                 throw "Attribute type required";
             }
+            if (this.hasAttribute('readonly')) {
+                readOnly = true;
+            }
+            initDatePicker();
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.type == "attributes") {
+                        let event = new Event('change');
+                        realInput.dispatchEvent(event);
+                    }
+                });
+            });
+            observer.observe(realInput, {
+                attributes: true
+            });
             input.addEventListener('change', function () {
-                realInput.setAttribute('value',input.getAttribute('value'));
+                realInput.setAttribute('value', input.getAttribute('value'));
             });
             let date = new Date();
             makeDate(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
