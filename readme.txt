@@ -4,6 +4,8 @@ To use this:
 date = date without hours (day/month/year)
 datetime = date and hours (day/month/year hours:minutes:seconds)
 
+attribute readonly makes modifiable only via javascript
+
 you can customize color using : 
 
 --main-picker-color
