@@ -128,6 +128,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let shadow = this;
             let realInput;
 
+            let type;
+
             function selectDate(datePicker) {
                 let dateStr = input.getAttribute('value');
                 let dateSplit = dateStr.split(' ');
@@ -342,10 +344,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 let hourSelector = document.createElement('div');
                 hourSelector.classList.add('date-picker-hours');
                 datePicker.appendChild(hourSelector);
+                
                 let timeDiv = document.createElement('div');
                 timeDiv.classList.add('date-picker-timediv')
                 let heureInput = document.createElement('input');
-
                 heureInput.setAttribute('type', 'number');
                 heureInput.setAttribute('value', date.getHours());
                 heureInput.setAttribute('min', '0');
@@ -360,10 +362,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 let h = document.createElement('p');
                 h.innerHTML = "H";
-                timeDiv.appendChild(heureInput);
-                timeDiv.appendChild(h);
-                timeDiv.appendChild(minuteInput);
-                hourSelector.appendChild(timeDiv);
+                if(type != "datetime"){
+                    timeDiv.appendChild(heureInput);
+                    timeDiv.appendChild(h);
+                    timeDiv.appendChild(minuteInput);
+                    hourSelector.appendChild(timeDiv);
+                }
                 let buttonValidator = document.createElement('div');
                 buttonValidator.classList.add('date-picker-validation');
 
@@ -386,7 +390,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 realInput.setAttribute('name', this.getAttribute('name'));
             }
             else {
-                throw "Parameter name required";
+                throw "attribute name required";
+            }
+            if(this.hasAttribute('type'))
+            {
+                type=this.getAttribute('type');
+            }
+            else{
+                throw "Attribute type required";
             }
             input.addEventListener('change', function () {
                 realInput.setAttribute('value',input.getAttribute('value'));
