@@ -377,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 datePicker.appendChild(buttonValidator);
             }
-            initDatePicker(this);
+            initDatePicker();
             if (this.hasAttribute('name')) {
                 input.setAttribute('name', this.getAttribute('name'));
             }
