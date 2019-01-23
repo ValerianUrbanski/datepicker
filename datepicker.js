@@ -125,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
             let visible = false;
             let input;
             let root = this.shadowRoot;
+            let shadow = this;
+            let realInput;
 
             function selectDate(datePicker) {
                 let dateStr = input.getAttribute('value');
@@ -308,6 +310,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             function initDatePicker() {
                 let datePicker = document.createElement("div");
+                realInput = document.createElement('input');
+                realInput.type="text";
+                shadow.appendChild(realInput);
                 input = document.createElement('input');
                 input.setAttribute('type', 'text');
                 input.setAttribute('placeholder', 'choisir une date');
@@ -328,9 +333,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     th.innerHTML = shtDay;
                     thead.appendChild(th);
                 });
-                tbody = document.createElement('tbody');
                 let date = new Date();
-                makeDate(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+                tbody = document.createElement('tbody');
                 table.appendChild(thead);
                 table.appendChild(tbody);
                 datePicker.appendChild(header);
@@ -379,14 +383,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             initDatePicker();
             if (this.hasAttribute('name')) {
-                input.setAttribute('name', this.getAttribute('name'));
+                realInput.setAttribute('name', this.getAttribute('name'));
             }
             else {
                 throw "Parameter name required";
             }
             input.addEventListener('change', function () {
-                this.setAttribute('value', input.getAttribute('value'));
+                realInput.setAttribute('value',input.getAttribute('value'));
             });
+            let date = new Date();
+            makeDate(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
         }
     }
     datePicker.observedAttributes = ["value"];
