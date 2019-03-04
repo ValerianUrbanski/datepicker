@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
             text-align: center;
             cursor:pointer;
         }
-        .date-pickable::after{
+        .date-pickable::before{
             position: absolute;
             width: 30px;
             height: 30px;
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
             content: "";
             z-index:-1;
         }
-        .date-pickable:hover::after{
+        .date-pickable:hover::before{
             background-color: var(--main-picker-color,#3164f9);
         }
         .date-pickable:hover{
@@ -35,12 +35,13 @@ document.addEventListener('DOMContentLoaded', function () {
         .selected{
             color:white;
         }
-        .selected::after{
+        .selected::before{
             background-color: var(--main-picker-color,#3164f9);
         }
         .datePicker-picker td{
             position: relative;
             padding:0.7em;
+            z-index:1;
         }
         .datePicker-picker p{
             text-align: center;
@@ -59,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         .datePicker-picker table{
             width:100%;
+            background-color:white;
         }
         .date-picker-header{
             position: relative;
