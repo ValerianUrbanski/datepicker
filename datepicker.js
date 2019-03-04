@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .datePicker-picker
         {
             width:100%;
+            z-index:1000;
         }
         .datePicker-picker table{
             width:100%;
