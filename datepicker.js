@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function () {
-    class datePicker extends HTMLElement {
+class DatePicker extends HTMLElement {
         constructor() {
             super();
+            this.setDate = null;
             var shadow = this.attachShadow({ mode: 'open' });
             const style = document.createElement('style');
             style.textContent = `
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         `;
             shadow.appendChild(style);
+            return this;
         }
         connectedCallback() {
             let shortDay = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -133,7 +134,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let type;
             let readOnly = false;
-
+            this.setDate = setDateInfo;
+            function setDateInfo(date)
+            {
+                input.setAttribute('value',date);
+                selectDate(this);
+            }
             function selectDate(datePicker) {
                 let dateStr = input.getAttribute('value');
                 let dateSplit = dateStr.split(' ');
@@ -438,6 +444,5 @@ document.addEventListener('DOMContentLoaded', function () {
             makeDate(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
         }
     }
-    datePicker.observedAttributes = ["value"];
-    customElements.define('date-picker', datePicker);
-});
+    DatePicker.observedAttributes = ["value"];
+    customElements.define('date-picker', DatePicker);
