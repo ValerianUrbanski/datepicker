@@ -6,7 +6,9 @@ datetime = date and hours (day/month/year hours:minutes:seconds)
 
 added : 
 
-datePicker.setDate(yourDate)=> format must be dd/MM/yyyy OR dd/MM/yyyy HH:mm
+datePicker.setDate(yourDate)=> format must be dd/MM/yyyy OR dd/MM/yyyy HH:mm 
+
+datePicker.getDate() => return the displayed Date
 
 attribute readonly makes modifiable only via javascript
 

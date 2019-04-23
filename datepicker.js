@@ -1,7 +1,8 @@
 class DatePicker extends HTMLElement {
         constructor() {
             super();
-            this.setDate = null;
+            this.setDateString = null;
+            this.getDateString = null;
             var shadow = this.attachShadow({ mode: 'open' });
             const style = document.createElement('style');
             style.textContent = `
@@ -134,11 +135,16 @@ class DatePicker extends HTMLElement {
 
             let type;
             let readOnly = false;
-            this.setDate = setDateInfo;
+            this.setDateString = setDateInfo;
+            this.getDateString = getDateInfo;
             function setDateInfo(date)
             {
                 input.setAttribute('value',date);
                 selectDate(this);
+            }
+            function getDateInfo()
+            {
+                return input.getAttribute('value');
             }
             function selectDate(datePicker) {
                 let dateStr = input.getAttribute('value');
@@ -380,7 +386,6 @@ class DatePicker extends HTMLElement {
 
                 let h = document.createElement('p');
                 h.innerHTML = "H";
-                console.log(type);
                 if (type == "datetime") {
                     timeDiv.appendChild(heureInput);
                     timeDiv.appendChild(h);
@@ -403,6 +408,7 @@ class DatePicker extends HTMLElement {
                     selectDate(datePicker);
                 });
                 datePicker.appendChild(buttonValidator);
+                shadow.input = input;
             }
             if (this.hasAttribute('name')) {
                 realInput = document.createElement('input');
@@ -431,8 +437,12 @@ class DatePicker extends HTMLElement {
                     if (mutation.type == "attributes") {
                         let event = new Event('change');
                         realInput.dispatchEvent(event);
+                        shadow.dispatchEvent(event);
                     }
                 });
+            });
+            realInput.addEventListener("hand-changed",function(ev){
+                setDateInfo(realInput.getAttribute("value"));
             });
             observer.observe(realInput, {
                 attributes: true
@@ -442,6 +452,16 @@ class DatePicker extends HTMLElement {
             });
             let date = new Date();
             makeDate(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+        }
+        getDate()
+        {
+            return realInput.getAttribute("value");
+        }
+        setDate(date)
+        {
+            realInput.setAttribute("value",date);
+            let event = new Event("hand-changed");
+            realInput.dispatchEvent(event);
         }
     }
     DatePicker.observedAttributes = ["value"];
